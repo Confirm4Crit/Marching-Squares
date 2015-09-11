@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 
 public class VoxelMap : MonoBehaviour {
-
     public float Size = 2f;
 
     public int VoxelResolution = 8;
@@ -13,6 +12,17 @@ public class VoxelMap : MonoBehaviour {
 
     private float _chunkSize, _voxelSize, _halfSize;
 
+    private static string[] _fillTypeNames = {"Filled", "Empty"};
+
+    private int _fillTypeIndex;
+
+    private void OnGUI()
+    {
+        GUILayout.BeginArea(new Rect(4f, 4f, 150f, 500f));
+        GUILayout.Label("Fill Type");
+        _fillTypeIndex = GUILayout.SelectionGrid(_fillTypeIndex, _fillTypeNames, 2);
+        GUILayout.EndArea();
+    }
     private void Awake()
     {
         _halfSize = Size * 0.5f;
@@ -54,7 +64,9 @@ public class VoxelMap : MonoBehaviour {
         int chunkY = voxelY / VoxelResolution;
         voxelX -= chunkX * VoxelResolution;
         voxelY -= chunkY * VoxelResolution;
-        _chunks[chunkY * ChunkResolution + chunkX].SetVoxel(voxelX, voxelY, true);
+        VoxelStencil activeStencil = new VoxelStencil();
+        activeStencil.Initialize(_fillTypeIndex == 0);
+        _chunks[chunkY * ChunkResolution + chunkX].Apply(voxelX, voxelY, activeStencil);
         Debug.Log(voxelX + ", " + voxelY + " in chunk " + chunkX + ", " + chunkY);
     }
 

@@ -27,9 +27,9 @@ public class VoxelGrid : MonoBehaviour
         }
         SetVoxelColor();
     }
-    public void SetVoxel(int voxelX, int voxelY, bool b)
+    public void Apply(int voxelX, int voxelY, VoxelStencil stencil)
     {
-        _voxels[voxelY * Resoultion + voxelX] = b;
+        _voxels[voxelY * Resoultion + voxelX] = stencil.Apply(voxelX, voxelY);
         SetVoxelColor();
     }
     private void SetVoxelColor()
